@@ -2,10 +2,6 @@
 
 Linear clone app used to demonstrate an agent fixing a UI bug autonomously using the Playwright MCP server.
 
-## Source
-
-Codebase from [`tadasant/ts-hack-day`](https://github.com/tadasant/ts-hack-day) (`linear-clone-demo/` directory).
-
 ## Prerequisites
 
 - Node.js >= 16

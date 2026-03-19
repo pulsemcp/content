@@ -12,10 +12,10 @@
 1. What is an agentic loop
 2. What does it mean to close an agentic loop
 3. **Demo 1**: Fixing a UI bug with Playwright MCP (`demo-1/`)
-4. **Demo 2**: Triaging on-call support with Appsignal, Postgres, and Playwright (`demo-2/`)
+4. **Demo 2**: Triaging on-call support with Appsignal, Postgres, Playwright, and Slack (`demo-2/`)
 5. How to action this in your work
 
 ### Demo Folders
 
 - `demo-1/` — Linear clone app for the UI bug demo (Playwright MCP)
-- `demo-2/` — On-call triage demo (Appsignal + Postgres + Playwright MCP)
+- `demo-2/` — On-call triage demo (Appsignal + Postgres + Playwright + Slack MCP)
