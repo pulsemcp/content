@@ -1,4 +1,3 @@
-
 Title Slide: Closing the Loop: MCP-Powered Agentic Engineering
 - Tadas Antanavicius
 - PulseMCP

@@ -5,7 +5,7 @@
 **Format**: Online (YouTube)
 **Presenter**: Tadas Antanavicius
 
-## Talk: Closing the Loop — MCP-Powered Agentic Engineering
+## Talk: Closing the Loop: MCP-Powered Agentic Engineering
 
 ### Agenda
 

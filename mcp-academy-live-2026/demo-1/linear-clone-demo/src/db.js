@@ -1,5 +1,7 @@
 const { Pool } = require("pg");
 
+// Local dev only — DATABASE_URL should be set in production.
+// The fallback below uses throwaway local dev credentials, not real secrets.
 const pool = new Pool({
   connectionString:
     process.env.DATABASE_URL ||

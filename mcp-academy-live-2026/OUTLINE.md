@@ -21,7 +21,7 @@ Slide 3 - The (High Level) Solution
 
 The theory of agentic engineering is that we can collapse those cycles into autonomous loops
 
-Sometimes called verifications loops
+Sometimes called verification loops
 
 Human -> Agent in a box that performs loops performing the above task
 
@@ -79,7 +79,7 @@ Highlight very common: giving access to logs of your server (MCP is not the only
 
 Slide 9 - Demo 2
 
-## Demo 2: Full-Stack Agent with Production Access
+Demo 2: Full-Stack Agent with Production Access
 
 **Tools provided to the agent**:
 - **AppSignal** — error tracking and performance monitoring
@@ -99,7 +99,7 @@ Start with on-call / triage
 - Agent gets a page, pulls logs, checks metrics, identifies the issue, proposes a fix
 - The workflow is already structured, so it's a natural fit for autonomous agents
 
-## Read Next: Agentic Engineering
+Read Next: Agentic Engineering
 
 - The blog post / deeper content that goes beyond this workshop
 - **Importantly: you need to parallelize workflows**
