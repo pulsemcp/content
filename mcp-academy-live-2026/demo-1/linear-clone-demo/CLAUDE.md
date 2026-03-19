@@ -1,4 +1,4 @@
-# AGENTS.md — Linear Clone
+# Linear Clone
 
 A barebones Linear-style issue tracker built with Express, PostgreSQL, and vanilla HTML/CSS/JS. Designed as a hack day demo for testing AI coding agents against a real full-stack app.
 
@@ -29,7 +29,7 @@ Single `issues` table with:
 
 ### Running Locally
 
-Use the `/skill:start-dev-server` skill to start the app. It handles environment detection, Docker Compose setup, health checks, and status reporting.
+Use the `/start-dev-server` skill to start the app. It handles environment detection, Docker Compose setup, health checks, and status reporting.
 
 ## Git Workflow
 
