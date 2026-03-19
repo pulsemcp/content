@@ -24,7 +24,7 @@ Slide 4: What We'll Cover
 1. What is an agentic loop
 2. What does it mean to close an agentic loop
 3. Demo 1: fixing a UI bug with Playwright MCP
-4. Demo 2: triaging on-call support with Appsignal, Postgres, Playwright, and Slack
+4. Demo 2: triaging on-call support with AppSignal, Postgres, Playwright, and Slack
 5. How to action this in your work
 
 Slide 5: What Is An Agentic Loop
@@ -59,7 +59,7 @@ Slide 8: Demo
 
 Slide 9: Demo
 - Triaging an application monitoring alert
-- ft: Appsignal, Postgres, Playwright, and Slack MCP servers
+- ft: AppSignal, Postgres, Playwright, and Slack MCP servers
 
 Slide 10: How To Action This
 - Identify your external systems -> MCP servers
