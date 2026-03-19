@@ -1,17 +1,17 @@
 # Demo 2: On-Call Triage with MCP
 
-Debugging a production issue end-to-end — from Slack alert to merged fix — using MCP servers for Slack, AppSignal, Postgres, and Playwright.
+Debugging a production issue end-to-end — from Slack alert to pull request — using MCP servers for Slack, AppSignal, Postgres, and Playwright.
 
 ## MCP Servers Used
 
 - **Slack** — receive the alert, post status updates
 - **AppSignal** — error tracking and performance monitoring
-- **Postgres** — read-only database access to query production data
+- **Postgres** — read-only database access to query application data
 - **Playwright** — browser automation for UI verification
 
 ## Context Setter
 
-> We're going to watch an AI agent debug a production issue end-to-end — from Slack alert to merged fix — using MCP servers for Slack, AppSignal, Postgres, and Playwright.
+> We're going to watch an AI agent debug a production issue end-to-end — from Slack alert to pull request — using MCP servers for Slack, AppSignal, Postgres, and Playwright.
 >
 > Here's the scenario: PulseMCP is a directory of MCP servers — think of it like a curated app store for the MCP ecosystem. A data pipeline that syncs metadata from the official MCP registry just ingested a corrupt record for one of our server listings. A user browsing the site hits the page and gets a 500 error.
 >
