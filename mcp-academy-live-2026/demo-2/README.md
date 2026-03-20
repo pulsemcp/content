@@ -13,7 +13,9 @@ Debugging a production issue end-to-end — from Slack alert to pull request —
 
 > We're going to watch an AI agent debug a production issue end-to-end — from Slack alert to pull request — using MCP servers for Slack, AppSignal, Postgres, and Playwright.
 >
-> Here's the scenario: PulseMCP is a directory of MCP servers — think of it like a curated app store for the MCP ecosystem. A data pipeline that syncs metadata from the official MCP registry just ingested a corrupt record for one of our server listings. A user browsing the site hits the page and gets a 500 error.
+> Here's the scenario: PulseMCP is a directory of MCP servers. One of its data sources is the official MCP Registry. It syncs data from that MCP registry daily.
+>
+> Let's assume the official MCP Registry had a bug that resulted in a malformed record being ingested. And for PulseMCP visitors, this means a 500 error when they visit a certain page.
 >
 > The twist: there are actually *two* bugs hiding in that bad data, but you can only see the second one after you fix the first. The first bug crashes the page before it even starts rendering. Once you fix that, the page gets further along but hits a *different* crash from a *different* field in the same corrupt record. The agent has to diagnose and fix both, deploying to staging each time and using Playwright to verify — discovering the second bug only after the first fix is live.
 >
