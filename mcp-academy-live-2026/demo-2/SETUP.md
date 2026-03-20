@@ -4,116 +4,116 @@ Step-by-step instructions to prepare the staging environment for the on-call tri
 
 ## Prerequisites
 
-- Access to the PulseMCP staging Rails console or direct Postgres access to staging DB
-- A server with an official mirror record (has `mcp_servers_official_mirrors` data) — pick a popular one that you know has a server.json callout visible on the show page
+- An Agent Orchestrator session on the PulseMCP staging app with the **Postgres MCP server** connected (read-write access to the staging DB)
+- Optionally, **Playwright MCP server** connected for browser verification
+- An AppSignal error-count trigger configured for staging that sends to a Slack channel (e.g. `error count > 0` → `#eng-alerts`)
 
-## Step 1: Identify your target server
+## Choosing a target server
 
-Pick a live server that has official mirror data. In staging Rails console:
+**The target server must have exactly one official mirror record.** This is critical.
 
-```ruby
-# Find a good candidate — a server with an official mirror and the server.json callout visible
-server = McpServer.joins(:mcp_servers_official_mirrors)
-  .includes(:mcp_implementation)
-  .where(mcp_implementations: { status: "live" })
-  .first
+Servers with multiple mirrors (like `github`) will NOT properly trigger Bug 2. When Bug 1 is fixed, the corrupted record sorts last and `server_json_name` reads from a different (valid) mirror — so the second crash never happens.
 
-puts "Server: #{server.slug} (#{server.name})"
-puts "Mirror count: #{server.mcp_servers_official_mirrors.count}"
-mirror = server.mcp_servers_official_mirrors.first
-puts "Mirror ID: #{mirror.id}"
-puts "Current name: #{mirror.server_json_name}"
-puts "Current publishedAt: #{mirror.registry_published_at}"
+With exactly one mirror, the corrupted record is the only one, so both bugs trigger sequentially.
+
+Find candidates:
+
+```sql
+SELECT s.slug, s.id AS server_id, m.id AS mirror_id,
+       s.downloads_estimate_total
+FROM mcp_servers s
+JOIN mcp_servers_official_mirrors m ON m.mcp_server_id = s.id
+GROUP BY s.id, s.slug, s.downloads_estimate_total, m.id
+HAVING count(m.id) OVER (PARTITION BY s.id) = 1
+ORDER BY s.downloads_estimate_total DESC NULLS LAST
+LIMIT 10;
 ```
 
-Write down the **mirror ID** and the **original jsonb_data** so you can restore it after the demo.
+Good candidates as of March 2026: `sentry` (mirror 10818), `stripe-agent-toolkit`, `browserbase-mcp-server`.
 
-## Step 2: Back up the original data
+## Step 1: Back up and corrupt the record
 
-```ruby
-mirror = McpServersOfficialMirror.find(MIRROR_ID)
-original_data = mirror.jsonb_data.deep_dup
+```sql
+-- Back up (save this output for restore)
+SELECT jsonb_data FROM mcp_servers_official_mirrors WHERE id = <MIRROR_ID>;
 
-# Save this somewhere safe — you'll need it to restore after the demo
-puts original_data.to_json
+-- Corrupt: invalid publishedAt (month 13) + numeric name (integer instead of string)
+UPDATE mcp_servers_official_mirrors
+SET jsonb_data = jsonb_set(
+  jsonb_set(
+    jsonb_data,
+    '{_meta,io.modelcontextprotocol.registry/official,publishedAt}',
+    '"2025-13-01T00:00:00Z"'
+  ),
+  '{server,name}',
+  '12345'
+)
+WHERE id = <MIRROR_ID>
+RETURNING
+  jsonb_data->'_meta'->'io.modelcontextprotocol.registry/official'->>'publishedAt' AS new_published_at,
+  jsonb_typeof(jsonb_data->'server'->'name') AS new_name_type;
 ```
 
-## Step 3: Corrupt the record (both bugs at once)
+Verify: `new_published_at = '2025-13-01T00:00:00Z'` and `new_name_type = 'number'`.
 
-```ruby
-mirror = McpServersOfficialMirror.find(MIRROR_ID)
-data = mirror.jsonb_data.deep_dup
+## Step 2: Verify and trip the alert
 
-# Bug 1: Invalid publishedAt timestamp (month 13)
-# This will crash Time.iso8601() in server_json_files during controller execution
-data["_meta"]["io.modelcontextprotocol.registry/official"]["publishedAt"] = "2025-13-01T00:00:00Z"
+Use Playwright to confirm the 500 and generate enough errors to trip the AppSignal trigger:
 
-# Bug 2: Numeric name instead of string
-# This will crash String#split in server_json_maintainer_info during template rendering
-# (Only visible AFTER Bug 1 is fixed, because Bug 1 crashes earlier in the request lifecycle)
-data["server"]["name"] = 12345
-
-mirror.update_column(:jsonb_data, data)
-
-# Verify the corruption
-mirror.reload
-puts "publishedAt: #{mirror.registry_published_at}"  # => "2025-13-01T00:00:00Z"
-puts "name: #{mirror.server_json_name}"               # => 12345
-puts "name class: #{mirror.server_json_name.class}"   # => Integer
+```js
+const results = [];
+for (let i = 0; i < 5; i++) {
+  const response = await page.goto('https://staging.pulsemcp.com/servers/<SLUG>');
+  results.push(response.status());
+}
+return results; // Should all be 500
 ```
 
-## Step 4: Bust the cache
+Wait 1-2 minutes for the AppSignal trigger to fire and send the Slack notification.
 
-The show page is fragment-cached for 28 hours. Clear it so the bug is immediately visible:
+## How the two bugs work
 
-```ruby
-Rails.cache.clear
-# Or if you want to be surgical:
-# Rails.cache.delete_matched("mcp_server_show*")
-```
+**Bug 1 — Invalid `publishedAt` timestamp** (`_meta...publishedAt` = `"2025-13-01T00:00:00Z"`)
+- Crashes `Time.iso8601()` in `McpServer#server_json_files` during sorting (iterates ALL mirrors)
+- Error: `ArgumentError: mon out of range`
+- Fix: `rescue ArgumentError` around the `Time.iso8601` call
 
-## Step 5: Verify the bug is live
+**Bug 2 — Numeric `name` instead of string** (`server.name` = `12345` integer)
+- Only reachable after Bug 1 is fixed, because `server_json_files` must complete before `server_json_maintainer_info` is called
+- With one mirror, the corrupted record is necessarily the first result, so `server_json_name` returns the integer `12345`
+- Crashes `String#split` in `McpServer#server_json_maintainer_info`
+- Error: `NoMethodError: undefined method 'split' for 12345:Integer`
+- Fix: `.to_s` guard on the name, or type check before calling `split`
 
-Visit `https://staging.pulsemcp.com/servers/YOUR_SERVER_SLUG` in a browser. You should see a 500 error page.
+**Why single-mirror matters:** With multiple mirrors, Bug 1's fix makes the corrupted record sort last (fallback timestamp = 0). Then `server_json_name` reads from the first (valid) mirror, and Bug 2 never triggers.
 
-## Step 6: Trigger the AppSignal alert
+## Step 3: Run the demo
 
-The 500 will automatically report to AppSignal. If you need it to also fire a Slack notification, just visit the page — AppSignal's alert policies should pick it up. If you want it immediately, you can manually trigger the page hit a couple of times to ensure the error is captured:
+Hand the Slack alert to the agent. Expected flow:
 
-```bash
-curl -s -o /dev/null -w "%{http_code}" https://staging.pulsemcp.com/servers/YOUR_SERVER_SLUG
-# Should return: 500
-```
+1. Read AppSignal alert → `ArgumentError: mon out of range`
+2. Query DB → find invalid `publishedAt` value (`2025-13-01T00:00:00Z`)
+3. Playwright → confirm 500
+4. Fix Bug 1: `rescue ArgumentError` around `Time.iso8601` in `server_json_files`
+5. Deploy to staging → Playwright → **still 500** (different error!)
+6. Read new AppSignal error → `NoMethodError: undefined method 'split' for 12345:Integer`
+7. Query DB → find `name` is an integer, not a string
+8. Fix Bug 2: type guard in `server_json_maintainer_info`
+9. Deploy to staging → Playwright → page loads
+10. Open PR
 
-## Step 7: Run the demo
+## Step 4: Restore after demo
 
-Hand the Slack alert to the agent. It should:
-
-1. Read the AppSignal alert → see `ArgumentError: invalid date`
-2. Query the DB → find the bad `publishedAt` value
-3. Reproduce with Playwright → confirm 500
-4. Fix: add `rescue ArgumentError` around `Time.iso8601` in `server_json_files`
-5. Push to staging → deploy
-6. Test with Playwright → **still 500** (different error!)
-7. Read the new AppSignal error → see `NoMethodError: undefined method 'split' for 12345:Integer`
-8. Query the DB → find `name` is an integer, not a string
-9. Fix: add type guard in `server_json_maintainer_info`
-10. Push to staging → deploy
-11. Test with Playwright → page loads correctly
-12. Open PR for merge
-
-## Step 8: Restore after demo
-
-```ruby
-mirror = McpServersOfficialMirror.find(MIRROR_ID)
-mirror.update_column(:jsonb_data, ORIGINAL_DATA_JSON_YOU_SAVED)
-Rails.cache.clear
+```sql
+UPDATE mcp_servers_official_mirrors
+SET jsonb_data = '<ORIGINAL_JSONB_DATA>'::jsonb
+WHERE id = <MIRROR_ID>;
 ```
 
 Then close/revert the PR branch.
 
 ## Timing Notes
 
-- The whole agent run should take roughly 10-15 minutes depending on staging deploy speed
-- Each staging deploy takes ~2 minutes
-- If you want to speed up the demo, you can pre-stage the branch with the first fix already committed, then have the agent "discover" the second bug live
+- Full agent run: ~10-15 minutes
+- Each staging deploy: ~2 minutes
+- To speed up: pre-stage the branch with Bug 1 fix already committed, let the agent discover Bug 2 live
