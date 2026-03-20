@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "playwright-custom": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "playwright-stealth-mcp-server@latest"
+      ],
+      "env": {
+        "STEALTH_MODE": "false",
+        "HEADLESS": "false"
+      }
+    }
+  }
+}
