@@ -21,5 +21,5 @@
 
 ### Demo Folders
 
-- `demo-1/` — Linear clone app for the UI bug demo (Playwright MCP)
-- `demo-2/` — On-call triage demo (AppSignal + Postgres + Playwright + Slack MCP)
+- [`demo-1/`](demo-1/) — Linear clone app for the UI bug demo (Playwright MCP) — includes [recording](demo-1/README.md)
+- [`demo-2/`](demo-2/) — On-call triage demo (AppSignal + Postgres + Playwright + Slack MCP) — includes [recording](demo-2/README.md)
