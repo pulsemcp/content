@@ -1,5 +1,7 @@
 # Demo 2: On-Call Triage with MCP
 
+> **Recording**: [Watch on Loom](https://www.loom.com/share/4e25c006fb3c483bbf4fc797e80670f8)
+
 Debugging a production issue end-to-end — from Slack alert to pull request — using MCP servers for Slack, AppSignal, Postgres, and Playwright.
 
 ## MCP Servers Used
