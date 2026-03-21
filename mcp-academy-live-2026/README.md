@@ -7,6 +7,13 @@
 
 ## Talk: Closing the Loop: MCP-Powered Agentic Engineering
 
+### Demo Recordings
+
+| Demo | Description | Link |
+|------|-------------|------|
+| **Demo 1** | Fixing a UI bug with Playwright MCP | [Watch on Loom](https://www.loom.com/share/2d08b6ceec42441391c0c7bcb99bdc02) |
+| **Demo 2** | Triaging on-call support with AppSignal, Postgres, Playwright, and Slack | [Watch on Loom](https://www.loom.com/share/4e25c006fb3c483bbf4fc797e80670f8) |
+
 ### Agenda
 
 1. What is an agentic loop
