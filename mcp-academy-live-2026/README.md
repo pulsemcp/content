@@ -15,6 +15,10 @@
 4. **Demo 2**: Triaging on-call support with AppSignal, Postgres, Playwright, and Slack (`demo-2/`)
 5. How to action this in your work
 
+### Slides
+
+- [Closing-the-Loop-MCP-Powered-Agentic-Engineering.pdf](Closing-the-Loop-MCP-Powered-Agentic-Engineering.pdf)
+
 ### Demo Folders
 
 - `demo-1/` — Linear clone app for the UI bug demo (Playwright MCP)
