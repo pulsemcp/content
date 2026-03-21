@@ -1,5 +1,7 @@
 # Demo 1: Implementing a Feature with Playwright MCP
 
+> **Recording**: [Watch on Loom](https://www.loom.com/share/2d08b6ceec42441391c0c7bcb99bdc02)
+
 A Linear clone app used to demonstrate a coding agent implementing a feature, discovering a runtime bug through browser testing, and fixing it autonomously.
 
 ## What the audience sees
