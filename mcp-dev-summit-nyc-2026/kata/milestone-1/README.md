@@ -45,7 +45,7 @@ The agent navigates Linear's UI with Playwright, captures the interface, and ite
 
 ## Starting Point
 
-The `start/` directory contains the starting state for this milestone.
+The `start/` directory is the starting point for this exercise — this is the first milestone, so no prior milestones are required.
 
 ## What You'll Have When Done
 

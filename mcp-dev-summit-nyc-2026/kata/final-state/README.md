@@ -5,12 +5,12 @@ This directory contains the completed state of the Linear clone app after all 5 
 ## What's Included
 
 The full application with:
-- A high-fidelity UI based on Linear's interface (Milestone 1 → 2)
-- Frontend, backend, and Postgres database with CRUD operations (Milestone 2)
+- A high-fidelity Figma design based on Linear's interface (Milestone 1)
+- Frontend, backend, and Postgres database with CRUD operations, UI matching the Figma design (Milestone 2)
 - Deployment configuration for DigitalOcean (Milestone 3)
 - CI/CD pipeline via GitHub Actions (Milestone 3)
 - Slack integration — ticket completion posts to a channel (Milestone 4)
-- Sentry error monitoring (Milestone 5)
+- Sentry error monitoring, with the seeded error condition resolved (Milestone 5)
 
 ## Purpose
 
