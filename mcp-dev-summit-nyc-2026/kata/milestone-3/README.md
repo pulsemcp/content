@@ -136,6 +136,8 @@ To accomplish this:
 - Use Chrome DevTools to navigate the deployed app and verify CRUD works
 - If anything fails, check the container logs and fix it
 - Don't stop until the app is live and working end-to-end
+
+Open a PR with your script and a writeup of reference documentation on our final architecture, deployment instructions.
 ```
 
 **Next up**: [Milestone 4 — Parallelizing Three Features →](../milestone-4/)
