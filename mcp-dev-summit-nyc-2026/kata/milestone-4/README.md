@@ -177,4 +177,4 @@ After deploying, verify everything works end-to-end on the live app:
 If there are bugs, get them fixed and deploy until you have verified there are none remaining. Open a PR if this involves any code/script changes.
 ```
 
-**Next up**: [Milestone 5 — Triaging an Alert →](../milestone-5/)
+You're done! Check out the [`final-state/`](../final-state/) directory to compare your result.
