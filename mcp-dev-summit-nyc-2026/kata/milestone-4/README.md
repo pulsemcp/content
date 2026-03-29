@@ -58,16 +58,17 @@ Spin up three git clones. Each agent gets its own clone and works independently.
          │                  │  │                  │  │                  │
          └───────┬──────────┘  └───────┬──────────┘  └───────┬──────────┘
                  │                     │                     │
-                 └─────────┬───────────┘─────────────────────┘
-                           │
-                    Merge all three PRs
-                           │
-                    Deploy combined result
+                 ▼                     ▼                     ▼
+                 └─────────────────────┼─────────────────────┘
+                                       │
+                                Merge all three PRs
+                                       │
+                                Deploy combined result
 ```
 
 ### Step 3: Merge and Deploy
 
-Merge the three PRs, resolve any minor conflicts, deploy, and verify all three features work together on the live app.
+Once all three agents have opened their PRs, you (or a coordinating agent) merge them into main, resolve any minor conflicts, deploy the combined result, and verify all three features work together on the live app.
 
 ## MCP Servers & Tools
 
@@ -95,9 +96,9 @@ Merge the three PRs, resolve any minor conflicts, deploy, and verify all three f
 - **Definition of done**: Tickets have a priority field (P0–P3) with color-coded labels
 - **Verification**: Playwright confirms the UI matches the Figma design and priority labels render with correct colors
 
-### Combined Verification
+### Combined Verification (Step 3)
 - **Definition of done**: All three features work together on the deployed app
-- **Verification**: Deploy the merged result, then verify Slack notifications fire, due dates display correctly, and priority levels render — all on the live app
+- **Verification**: After merging all three PRs, deploy the combined result and verify Slack notifications fire, due dates display correctly, and priority levels render — all on the live app. This step is handled by you or a coordinating agent.
 
 ## Parallelization Principles Demonstrated
 

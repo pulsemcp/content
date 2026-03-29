@@ -58,7 +58,7 @@ The agent reads the Sentry alert, diagnoses the root cause from stack traces and
 
 ## Starting Point
 
-The `start/` directory contains the starting state for this milestone — a deployed app with Slack notifications, due dates, and priority levels from Milestone 4, plus Sentry monitoring and a deliberate error condition pre-configured for this exercise. You can jump straight in here without completing Milestones 1–4.
+The `start/` directory contains the starting state for this milestone — a deployed app with Slack notifications, due dates, and priority levels from Milestone 4. Sentry monitoring and a deliberate error condition are pre-configured as part of this milestone's starting state (not inherited from Milestone 4). You can jump straight in here without completing Milestones 1–4.
 
 ## What You'll Have When Done
 
