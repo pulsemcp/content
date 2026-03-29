@@ -37,7 +37,7 @@ kata/
 ├── milestone-3/          # Deploying to Remote Infrastructure
 │   ├── README.md
 │   └── start/
-├── milestone-4/          # Adding a Slack Integration
+├── milestone-4/          # Parallelizing Three Features
 │   ├── README.md
 │   └── start/
 ├── milestone-5/          # Triaging an Alert
@@ -54,7 +54,7 @@ kata/
 | 1 | [**Idea to Figma Design**](milestone-1/) | Playwright, Figma | [`milestone-1/start/`](milestone-1/start/) |
 | 2 | [**Figma Design to Implementation**](milestone-2/) | Playwright, Figma, GitHub, `/start-dev-server` skill | [`milestone-2/start/`](milestone-2/start/) |
 | 3 | [**Deploying to Remote Infrastructure**](milestone-3/) | DigitalOcean, SSH, GitHub | [`milestone-3/start/`](milestone-3/start/) |
-| 4 | [**Adding a Slack Integration**](milestone-4/) | Slack, GitHub, DigitalOcean, SSH | [`milestone-4/start/`](milestone-4/start/) |
+| 4 | [**Parallelizing Three Features**](milestone-4/) | Figma, Playwright, Slack, GitHub, DigitalOcean, SSH | [`milestone-4/start/`](milestone-4/start/) |
 | 5 | [**Triaging an Alert**](milestone-5/) | Sentry, GitHub, DigitalOcean, SSH | [`milestone-5/start/`](milestone-5/start/) |
 
 ## Tips for Success

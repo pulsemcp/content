@@ -1,55 +1,110 @@
-# Milestone 4: Adding a Slack Integration
+# Milestone 4: Parallelizing Three Features
 
-**Goal**: When a ticket is marked complete in our app, post a notification to a Slack channel.
+**Goal**: Ship three features in parallel — each on its own git clone with its own agent — and merge them all cleanly.
 
 ## Context
 
-The app is deployed and working. Now we're adding an integration with a SaaS tool — Slack. This is an example of a pattern you'll see often: your company uses some external service, and you want your app to talk to it. The Slack MCP server lets the agent build, test, and verify the integration without you manually checking Slack.
+The app is deployed and working. Now we want to add three features at once. This is where parallelization comes in: the talk covered the "Aha #2" moment of running multiple agents simultaneously. Here we practice it.
 
-## The Loop
+The catch: these features **trample each other**. They touch the same files — the ticket model, the ticket card UI, the creation form, the API routes. If you ran three agents on the same clone, you'd get constant merge conflicts. The solution: **one git clone per agent**, then merge the results.
 
-The agent implements the Slack integration, deploys the change, then verifies end-to-end that marking a ticket complete actually delivers a message to the configured Slack channel.
+### The Three Features
+
+1. **Slack notification on ticket complete** — When a ticket is marked done, post a message to a Slack channel. Touches the ticket status change handler and adds a backend integration.
+
+2. **Due dates with overdue highlighting** — Add a due date field to tickets with a date picker in the creation form and visual overdue indicators on the ticket card. Touches the DB schema, ticket card UI, creation form, and API.
+
+3. **Ticket priority levels (P0–P3)** — Add a priority field with color-coded labels. Touches the DB schema, ticket card UI, creation form, and API.
+
+Features 2 and 3 are the trampling showcase: they both modify the same database migration, the same ticket card component, the same form, and the same API serialization. Running them on one clone would be a disaster. Running them on separate clones lets each agent work independently, and the merges resolve cleanly.
+
+## Steps
+
+### Step 1: Design the Visual Features
+
+Before kicking off the parallel agents, create Figma designs for the due dates and priority levels features. This gives agents 2 and 3 a clear visual target — the same way Milestone 2 used a Figma design to drive implementation.
 
 ```
-┌───────────────────────────────────────────────────┐
-│                                                   │
-│   Implement Slack integration                     │
-│           │                                       │
-│           ▼                                       │
-│   GitHub (open PR, CI passes)                     │
-│           │                                       │
-│           ▼                                       │
-│   Deploy to production (DigitalOcean + SSH)        │
-│           │                                       │
-│           ▼                                       │
-│   Mark a ticket complete in the live app          │
-│           │                                       │
-│           ▼                                       │
-│   Slack MCP (check: did the message arrive?)      │
-│           │                                       │
-│     Arrived? ──── No ──→ diagnose & fix           │
-│           │                                       │
-│          Yes                                      │
-│           │                                       │
-│         Done                                      │
-│                                                   │
-└───────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────┐
+│                                                │
+│   Figma (design due dates + priority UI)       │
+│           │                                    │
+│           ▼                                    │
+│   Playwright (compare Figma ↔ current app)     │
+│           │                                    │
+│       Good? ──── No ──→ iterate in Figma       │
+│           │                                    │
+│          Yes                                   │
+│           │                                    │
+│   Designs ready for agents 2 & 3               │
+│                                                │
+└────────────────────────────────────────────────┘
 ```
 
-## MCP Servers
+### Step 2: Run Three Agents in Parallel
 
-| Server | Role |
-|--------|------|
-| **Slack** | Configure the integration and verify that messages are actually delivered |
-| **GitHub** | PRs for the feature; Actions for CI/CD |
-| **DigitalOcean** | Deploy the updated app to the existing droplet |
-| **SSH** | Verify the deployed app is running with the new integration |
+Spin up three git clones. Each agent gets its own clone and works independently.
 
-## Closed Loop
+```
+         ┌──── Clone 1 ────┐  ┌──── Clone 2 ────┐  ┌──── Clone 3 ────┐
+         │                  │  │                  │  │                  │
+         │  Agent 1:        │  │  Agent 2:        │  │  Agent 3:        │
+         │  Slack notifs    │  │  Due dates       │  │  Priority levels │
+         │                  │  │                  │  │                  │
+         │  Slack MCP ✓     │  │  Figma MCP ✓     │  │  Figma MCP ✓     │
+         │  GitHub MCP ✓    │  │  Playwright ✓    │  │  Playwright ✓    │
+         │  DigitalOcean ✓  │  │  GitHub MCP ✓    │  │  GitHub MCP ✓    │
+         │  SSH ✓           │  │  /start-dev ✓    │  │  /start-dev ✓    │
+         │                  │  │                  │  │                  │
+         └───────┬──────────┘  └───────┬──────────┘  └───────┬──────────┘
+                 │                     │                     │
+                 └─────────┬───────────┘─────────────────────┘
+                           │
+                    Merge all three PRs
+                           │
+                    Deploy combined result
+```
 
-- **Definition of done**: Marking a ticket complete in the deployed app triggers a Slack message in the configured channel
-- **Verification**: The agent deploys the change, marks a ticket complete on the live app, then uses the Slack MCP server to confirm the message arrived — testing the real delivery path, not just the code path
-- **Human role**: None. The agent tests the actual integration end-to-end against the deployed environment.
+### Step 3: Merge and Deploy
+
+Merge the three PRs, resolve any minor conflicts, deploy, and verify all three features work together on the live app.
+
+## MCP Servers & Tools
+
+| Server / Tool | Agent 1 (Slack) | Agent 2 (Due dates) | Agent 3 (Priority) |
+|---------------|:---:|:---:|:---:|
+| **Figma** | | ✓ | ✓ |
+| **Playwright** | | ✓ | ✓ |
+| **Slack** | ✓ | | |
+| **GitHub** | ✓ | ✓ | ✓ |
+| **DigitalOcean** | ✓ | | |
+| **SSH** | ✓ | | |
+| `/start-dev-server` **skill** | | ✓ | ✓ |
+
+## Closed Loops
+
+### Agent 1: Slack Integration
+- **Definition of done**: Marking a ticket complete in the deployed app triggers a Slack message
+- **Verification**: The agent deploys, marks a ticket complete, then uses Slack MCP to confirm the message arrived
+
+### Agent 2: Due Dates
+- **Definition of done**: Tickets have a due date field with a date picker, and overdue tickets are visually highlighted
+- **Verification**: Playwright confirms the UI matches the Figma design and overdue highlighting renders correctly
+
+### Agent 3: Priority Levels
+- **Definition of done**: Tickets have a priority field (P0–P3) with color-coded labels
+- **Verification**: Playwright confirms the UI matches the Figma design and priority labels render with correct colors
+
+### Combined Verification
+- **Definition of done**: All three features work together on the deployed app
+- **Verification**: Deploy the merged result, then verify Slack notifications fire, due dates display correctly, and priority levels render — all on the live app
+
+## Parallelization Principles Demonstrated
+
+- **Separate git clones** — Each agent gets its own copy of the code, avoiding merge conflicts during development
+- **Why these features trample** — Features 2 and 3 both add DB columns to the tickets table, modify the same ticket card component, the same creation form, and the same API serialization
+- **Design-first for visual features** — Creating Figma designs before kicking off agents gives each a clear, verifiable target
+- **Independent verification** — Each agent closes its own loop before the merge step
 
 ## Starting Point
 
@@ -57,4 +112,4 @@ The `start/` directory contains the starting state for this milestone — a depl
 
 ## What You'll Have When Done
 
-The Linear clone app with a working Slack integration — completing a ticket posts a notification to a Slack channel, verified against the live deployment.
+The Linear clone app with three new features (Slack notifications, due dates, priority levels), all developed in parallel and deployed together. Plus firsthand experience with the parallelization pattern: separate clones, independent loops, merge and verify.

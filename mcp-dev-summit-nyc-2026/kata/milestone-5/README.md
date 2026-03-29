@@ -4,7 +4,7 @@
 
 ## Context
 
-The app is deployed with a Slack integration. We've set up Sentry for error monitoring and introduced a deliberate error condition. The agent handles the full incident lifecycle: diagnose via Sentry, fix the code, deploy, and confirm the error stops firing.
+The app is deployed with three features from Milestone 4 (Slack notifications, due dates, priority levels). We've set up Sentry for error monitoring and introduced a deliberate error condition. The agent handles the full incident lifecycle: diagnose via Sentry, fix the code, deploy, and confirm the error stops firing.
 
 This is the capstone exercise — it combines everything from previous milestones (code changes, deployment, verification) into a single, realistic on-call triage scenario.
 
@@ -58,7 +58,7 @@ The agent reads the Sentry alert, diagnoses the root cause from stack traces and
 
 ## Starting Point
 
-The `start/` directory contains the starting state for this milestone — a deployed app with Slack integration from Milestone 4, plus Sentry monitoring and a deliberate error condition pre-configured for this exercise. You can jump straight in here without completing Milestones 1–4.
+The `start/` directory contains the starting state for this milestone — a deployed app with Slack notifications, due dates, and priority levels from Milestone 4, plus Sentry monitoring and a deliberate error condition pre-configured for this exercise. You can jump straight in here without completing Milestones 1–4.
 
 ## What You'll Have When Done
 

@@ -9,7 +9,9 @@ The full application with:
 - Frontend, backend, and Postgres database with CRUD operations, UI matching the Figma design (Milestone 2)
 - Deployment configuration for DigitalOcean (Milestone 3)
 - CI/CD pipeline via GitHub Actions (Milestone 3)
-- Slack integration — ticket completion posts to a channel (Milestone 4)
+- Slack notifications — ticket completion posts to a channel (Milestone 4)
+- Due dates with overdue highlighting (Milestone 4)
+- Ticket priority levels P0–P3 with color-coded labels (Milestone 4)
 - Sentry error monitoring, with the seeded error condition resolved (Milestone 5)
 
 ## Purpose
