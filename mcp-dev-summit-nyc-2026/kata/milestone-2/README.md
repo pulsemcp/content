@@ -153,4 +153,18 @@ Make you test for visual parity at least 5 times:
 - Do this at least 5 times; I want to be as close to pixel perfect (but not hacky -- e.g. no hardcoded pixel layouts) as possible
 
 And make sure you test core functionality end to end to ensure the frontend, backend, and database work nicely together.
+
+Include thorough documentation on system architecture and how to run the dev container, including instructions for how I would run multiple dev containers at once without trampling each other (e.g. set different ports exposed by each one).
 ```
+
+Have Claude tell you how to try it out
+
+```
+Run it locally for me so I can try it out.
+```
+
+Here's what ours looks like at the end:
+
+[▶ Demo video](assets/demo.mp4)
+
+**Next up**: [Milestone 3 — Deploying to Remote Infrastructure →](../milestone-3/)

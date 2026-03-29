@@ -4,9 +4,7 @@
 
 ## Context
 
-The app is working locally. Now we need to get it running on real infrastructure. We're simplifying for the day: a single DigitalOcean droplet running a container is our "production." In a real scenario you'd have staging environments, load balancers, etc. — but the closed-loop principles are the same.
-
-**CLI vs. MCP aside**: You could SSH via the CLI, but MCP is where infrastructure investment is heading. CLI has a hard ceiling — it's unstandardized, one-directional, and harder to constrain. If you architect your flows around MCP today, you get structured tool definitions, scoped permissions, and a foundation that scales with the ecosystem.
+The app is working locally. Now we need to get it running on real infrastructure. We're simplifying for the day: a single DigitalOcean droplet running a container is our "production." In a real scenario you'd likely have staging environments, load balancers, etc. — but the closed-loop principles are the same.
 
 ## The Loop
 
