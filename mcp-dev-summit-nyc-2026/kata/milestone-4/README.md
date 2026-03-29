@@ -121,9 +121,8 @@ Add Slack notifications to the Linear clone app. When a ticket's status is chang
 The SLACK_BOT_TOKEN env var is set in my shell with a bot that has chat:write scope and is invited to the channel.
 
 - Add a Slack integration to the backend using the bot token from the SLACK_BOT_TOKEN env var
-- Run the app locally
-- Use Chrome DevTools to mark a ticket as done, then use the Slack MCP to confirm the message arrived in the channel
-- Open a PR on GitHub with the changes
+- Test the app running locally and use Chrome DevTools to mark a ticket as done, then use the Slack MCP to confirm the message arrived in the channel. Keep iterating until it works end to end.
+- Open a PR on GitHub (https://github.com/tadasant/demo-mcp-dev-summit-linear) with the changes
 ```
 
 **Terminal 2 — Due dates** (in `start-due/`):
@@ -137,11 +136,10 @@ claude
 ```
 Add due dates to the Linear clone app.
 
-- Add a due_date column to the tickets table
-- Add a date picker to the create/edit ticket form
+- Add a date picker to the create/edit ticket form, backed by the database
 - Display the due date on ticket cards, with a red overdue indicator for past-due tickets
 - Run the app locally with docker compose and use Chrome DevTools to verify the date picker works and overdue highlighting renders correctly
-- Iterate until it looks polished, then open a PR on GitHub
+- Iterate until it looks polished, then open a PR on GitHub (https://github.com/tadasant/demo-mcp-dev-summit-linear) with the changes
 ```
 
 **Terminal 3 — Priority levels** (in `start-prio/`):
@@ -155,16 +153,15 @@ claude
 ```
 Add priority levels (P0–P3) to the Linear clone app.
 
-- Add a priority column to the tickets table
-- Add a priority dropdown to the create/edit ticket form
+- Add a priority dropdown to the create/edit ticket form, backed by the database
 - Display color-coded priority labels on ticket cards (P0 red, P1 orange, P2 yellow, P3 gray)
 - Run the app locally with docker compose and use Chrome DevTools to verify the priority dropdown works and labels render with correct colors
-- Iterate until it looks polished, then open a PR on GitHub
+- Iterate until it looks polished, then open a PR on GitHub (https://github.com/tadasant/demo-mcp-dev-summit-linear)
 ```
 
 ### Step 4: Merge, deploy, and verify
 
-Once all three agents have opened their PRs, tell the Slack agent to bring it all together:
+Once all three agents have opened their PRs, tell the Slack agent (because it has access to your Slack secret that needs to be deployed) to bring it all together:
 
 ```
 I've reviewed and approve of all three open PRs on this repo, including the one you just prepared. Merge them all into main, resolving any conflicts, and deploy the combined result to the droplet.
