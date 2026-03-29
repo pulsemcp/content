@@ -1,3 +1,5 @@
 .env
 .claude/skills
 claude_stderr.log
+.npm-cache
+/.mcp.json

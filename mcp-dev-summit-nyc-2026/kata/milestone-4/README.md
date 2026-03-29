@@ -30,7 +30,7 @@ Before kicking off the parallel agents, create Figma designs for the due dates a
 │   Figma (design due dates + priority UI)       │
 │           │                                    │
 │           ▼                                    │
-│   Playwright (compare Figma ↔ current app)     │
+│   Chrome DevTools (compare Figma ↔ current app) │
 │           │                                    │
 │       Good? ──── No ──→ iterate in Figma       │
 │           │                                    │
@@ -52,7 +52,7 @@ Spin up three git clones. Each agent gets its own clone and works independently.
          │  Slack notifs    │  │  Due dates       │  │  Priority levels │
          │                  │  │                  │  │                  │
          │  Slack MCP ✓     │  │  Figma MCP ✓     │  │  Figma MCP ✓     │
-         │  GitHub MCP ✓    │  │  Playwright ✓    │  │  Playwright ✓    │
+         │  GitHub MCP ✓    │  │  Chrome DT ✓     │  │  Chrome DT ✓     │
          │  DigitalOcean ✓  │  │  GitHub MCP ✓    │  │  GitHub MCP ✓    │
          │  SSH ✓           │  │  /start-dev ✓    │  │  /start-dev ✓    │
          │                  │  │                  │  │                  │
@@ -75,7 +75,7 @@ Once all three agents have opened their PRs, you (or a coordinating agent) merge
 | Server / Tool | Agent 1 (Slack) | Agent 2 (Due dates) | Agent 3 (Priority) |
 |---------------|:---:|:---:|:---:|
 | **Figma** | | ✓ | ✓ |
-| **Playwright** | | ✓ | ✓ |
+| **Chrome DevTools** | | ✓ | ✓ |
 | **Slack** | ✓ | | |
 | **GitHub** | ✓ | ✓ | ✓ |
 | **DigitalOcean** | ✓ | | |
@@ -90,11 +90,11 @@ Once all three agents have opened their PRs, you (or a coordinating agent) merge
 
 ### Agent 2: Due Dates
 - **Definition of done**: Tickets have a due date field with a date picker, and overdue tickets are visually highlighted
-- **Verification**: Playwright confirms the UI matches the Figma design and overdue highlighting renders correctly
+- **Verification**: Chrome DevTools confirms the UI matches the Figma design and overdue highlighting renders correctly
 
 ### Agent 3: Priority Levels
 - **Definition of done**: Tickets have a priority field (P0–P3) with color-coded labels
-- **Verification**: Playwright confirms the UI matches the Figma design and priority labels render with correct colors
+- **Verification**: Chrome DevTools confirms the UI matches the Figma design and priority labels render with correct colors
 
 ### Combined Verification (Step 3)
 - **Definition of done**: All three features work together on the deployed app
