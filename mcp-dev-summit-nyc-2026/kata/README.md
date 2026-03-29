@@ -84,7 +84,7 @@ We're simplifying for the day: a single box running a container is our "producti
 ### Closed Loop
 
 - **Definition of done**: The app is live on the public internet and responding to requests
-- **Verification**: The agent hits the deployed URL and confirms a successful response — or SSH-es in to check container health, logs, etc.
+- **Verification**: The agent hits the deployed URL and confirms a successful response — or uses SSH to check container health, logs, etc.
 - **Human role**: None. The agent provisions, deploys, and confirms end-to-end.
 
 ---
@@ -101,12 +101,14 @@ This is an example of integrating with a SaaS tool your company already uses. Th
 |--------|------|
 | **Slack** | Configure the integration and verify that messages are actually delivered |
 | **GitHub** | PRs for the feature; Actions for CI/CD |
+| **DigitalOcean** | Deploy the updated app to the existing droplet |
+| **SSH** | Verify the deployed app is running with the new integration |
 
 ### Closed Loop
 
-- **Definition of done**: Marking a ticket complete in the app triggers a Slack message in the configured channel
-- **Verification**: The agent marks a ticket complete, then uses the Slack MCP server to confirm the message arrived — testing the real delivery path, not just the code path
-- **Human role**: None. The agent tests the actual integration end-to-end.
+- **Definition of done**: Marking a ticket complete in the deployed app triggers a Slack message in the configured channel
+- **Verification**: The agent deploys the change, marks a ticket complete on the live app, then uses the Slack MCP server to confirm the message arrived — testing the real delivery path, not just the code path
+- **Human role**: None. The agent tests the actual integration end-to-end against the deployed environment.
 
 ---
 
@@ -114,13 +116,16 @@ This is an example of integrating with a SaaS tool your company already uses. Th
 
 **Goal**: An error is firing in production. The agent triages it, identifies the root cause, fixes it, and deploys the fix — all in a closed loop.
 
-We'll set up Sentry for error monitoring, contrive an error condition, and then let the agent handle the full incident lifecycle: diagnose via Sentry, fix the code, deploy, and confirm the error stops firing.
+We'll set up Sentry for error monitoring, introduce a deliberate error condition, and then let the agent handle the full incident lifecycle: diagnose via Sentry, fix the code, deploy, and confirm the error stops firing.
 
 ### MCP Servers
 
 | Server | Role |
 |--------|------|
 | **Sentry** | Pull error details, stack traces, and frequency data to diagnose the issue |
+| **GitHub** | PR for the fix; Actions to run the CI/CD pipeline |
+| **DigitalOcean** | Target the existing droplet for deployment |
+| **SSH** | Deploy the updated container and verify runtime state post-deploy |
 
 ### Closed Loop
 
@@ -134,5 +139,5 @@ We'll set up Sentry for error monitoring, contrive an error condition, and then 
 
 1. **Define "done" before you start** — Write explicit completion criteria in your prompt. If the agent can't tell when it's finished, the loop stays open.
 2. **Give verification tools** — Playwright for UI, CI for tests, Slack for integration delivery, Sentry for error rates. The agent needs to check its own work.
-3. **Keep the loop tight** — Provide observability (logs, data, config) so the agent self-corrects without spinning.
+3. **Keep the loop tight** — Provide observability (structured logs, health checks, config) so the agent self-corrects without spinning.
 4. **Stay out of the loop** — If you're manually verifying, approving, or authenticating, the loop is still open.
