@@ -112,7 +112,7 @@ Open three terminals. Each agent gets its own clone, its own Claude Code session
 cd start-slack
 export SLACK_BOT_TOKEN=xoxb-...
 export GITHUB_TOKEN=$(gh auth token)
-claude
+claude --dangerously-skip-permissions
 ```
 
 ```
@@ -130,7 +130,7 @@ The SLACK_BOT_TOKEN env var is set in my shell with a bot that has chat:write sc
 ```
 cd start-due
 export GITHUB_TOKEN=$(gh auth token)
-claude
+claude --dangerously-skip-permissions
 ```
 
 ```
@@ -147,7 +147,7 @@ Add due dates to the Linear clone app.
 ```
 cd start-prio
 export GITHUB_TOKEN=$(gh auth token)
-claude
+claude --dangerously-skip-permissions
 ```
 
 ```

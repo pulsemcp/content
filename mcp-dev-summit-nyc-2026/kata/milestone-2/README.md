@@ -108,7 +108,7 @@ Create a new empty repo on GitHub for the Linear clone app. You can do this from
 ```
 cd start
 export GITHUB_TOKEN=$(gh auth token)
-claude
+claude --dangerously-skip-permissions
 ## Inside Claude Code
 /mcp
 ```

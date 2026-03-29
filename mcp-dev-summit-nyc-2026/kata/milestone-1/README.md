@@ -59,7 +59,7 @@ A high-fidelity Figma design of Linear's core UI — ready for your design team 
 
 ```
 cd start
-claude
+claude --dangerously-skip-permissions
 ## Inside Claude Code
 /mcp
 ```

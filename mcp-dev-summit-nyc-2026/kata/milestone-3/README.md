@@ -112,7 +112,7 @@ export GITHUB_TOKEN=$(gh auth token)
 
 ```
 cd start
-claude
+claude --dangerously-skip-permissions
 ## Inside Claude Code
 /mcp
 ```
