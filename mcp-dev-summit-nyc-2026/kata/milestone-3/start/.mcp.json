@@ -1,9 +1,5 @@
 {
   "mcpServers": {
-    "figma": {
-      "url": "https://mcp.figma.com/mcp",
-      "type": "http"
-    },
     "chrome-devtools": {
       "command": "npx",
       "args": [
@@ -12,6 +8,13 @@
         "--headless",
         "--isolated"
       ]
+    },
+    "digitalocean": {
+      "type": "http",
+      "url": "https://droplets.mcp.digitalocean.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${DIGITALOCEAN_API_TOKEN}"
+      }
     },
     "github": {
       "type": "http",

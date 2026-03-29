@@ -53,7 +53,7 @@ kata/
 |---|-----------|-------------|------------|
 | 1 | [**Idea to Figma Design**](milestone-1/) | Chrome DevTools, Figma | [`milestone-1/start/`](milestone-1/start/) |
 | 2 | [**Figma Design to Implementation**](milestone-2/) | Chrome DevTools, Figma, GitHub | [`milestone-2/start/`](milestone-2/start/) |
-| 3 | [**Deploying to Remote Infrastructure**](milestone-3/) | DigitalOcean, SSH, GitHub | [`milestone-3/start/`](milestone-3/start/) |
+| 3 | [**Deploying to Remote Infrastructure**](milestone-3/) | DigitalOcean, Chrome DevTools, GitHub | [`milestone-3/start/`](milestone-3/start/) |
 | 4 | [**Parallelizing Three Features**](milestone-4/) | Figma, Chrome DevTools, Slack, GitHub, DigitalOcean, SSH, `/start-dev-server` skill | [`milestone-4/start/`](milestone-4/start/) |
 | 5 | [**Triaging an Alert**](milestone-5/) | Sentry, GitHub, DigitalOcean, SSH | [`milestone-5/start/`](milestone-5/start/) |
 
