@@ -9,18 +9,19 @@
         "--isolated"
       ]
     },
-    "digitalocean": {
+    "slack": {
       "type": "http",
-      "url": "https://droplets.mcp.digitalocean.com/mcp",
-      "headers": {
-        "Authorization": "Bearer ${DIGITALOCEAN_API_TOKEN}"
+      "url": "https://mcp.slack.com/mcp",
+      "oauth": {
+        "clientId": "1601185624273.8899143856786",
+        "callbackPort": 3118
       }
     },
     "github": {
       "type": "http",
       "url": "https://api.githubcopilot.com/mcp/",
       "headers": {
-        "X-MCP-Toolsets": "repos,pull_requests",
+        "X-MCP-Toolsets": "pull_requests",
         "Authorization": "Bearer ${GITHUB_TOKEN}"
       }
     }
