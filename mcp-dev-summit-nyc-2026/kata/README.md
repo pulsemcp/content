@@ -9,7 +9,7 @@ Hands-on exercises for practicing agentic engineering patterns. Each kata builds
 
 ## Exercises
 
-*Exercises will be added ahead of the session.*
+*Exercises will be added ahead of the MCP Dev Summit NYC session.*
 
 ## Tips for Success
 

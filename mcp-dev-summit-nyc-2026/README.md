@@ -1,9 +1,10 @@
 # Architecting Agentic Engineering Loops With MCP
 
 **Event**: MCP Dev Summit NYC 2026
+**Format**: In-person (New York City)
 **Presenter**: Tadas Antanavicius · [PulseMCP](https://pulsemcp.com)
 
-## About the Speaker
+## About the Presenter
 
 - **MCP Steering Group** — Maintainer of the MCP Registry and contributor community on GitHub and Discord
 - **PulseMCP** — A newsletter & catalog for discovering MCP servers across the growing ecosystem
@@ -22,7 +23,7 @@ This talk covers the concepts, demos, and hands-on practice to get there.
 | 01 | **What Is an Agentic Loop** | The foundational concept: "Tools running on a loop to achieve a goal" |
 | 02 | **"Aha" #1: Closing the Loop** | How to get an agent to spend 10 minutes productively |
 | 03 | **Demo 1: UI Feature Work** | Implement a feature on a Linear clone with a Playwright MCP server |
-| 04 | **Demo 2: On-Call Triage** | Triaging a support alert with AppSignal, Postgres, and Playwright |
+| 04 | **Demo 2: On-Call Triage** | Triaging a support alert with Slack, AppSignal, Postgres, and Playwright |
 | 05 | **"Aha" #2: Parallelization** | What it takes to get multiple loops going at once |
 | 06 | **Hands-on Kata Exercises** | Go from app idea to deployed infra, practicing loops along the way |
 
@@ -56,7 +57,7 @@ Running multiple agents at once requires solving:
 
 ### Demo 1: UI Feature Work
 
-Implement a UX feature on a Linear clone app. The agent uses Playwright MCP to navigate the UI, understand the scope, implement the change, and confirm the correct rendered outcome — no human in the loop.
+Implement a UI feature on a Linear clone app. The agent uses Playwright MCP to navigate the UI, understand the scope, implement the change, and confirm the correct rendered outcome — no human in the loop.
 
 ### Demo 2: On-Call Triage
 
@@ -69,6 +70,10 @@ Triage a production support alert end-to-end using:
 ## Kata Exercises
 
 Hands-on exercises for practicing agentic engineering loops: [`kata/`](kata/)
+
+## Slides
+
+*Slides will be added after the session.*
 
 ## Contact
 
