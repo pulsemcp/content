@@ -113,7 +113,11 @@ cd start-slack
 export SLACK_BOT_TOKEN=xoxb-...
 export GITHUB_TOKEN=$(gh auth token)
 claude --dangerously-skip-permissions
+## Inside Claude Code
+/mcp
 ```
+
+Make sure **Slack**, **Chrome DevTools**, and **GitHub** are all authenticated before proceeding.
 
 ```
 Add Slack notifications to the Linear clone app. When a ticket's status is changed to "Done", post a message to the Slack channel #linear-clone-notifications.
@@ -173,5 +177,7 @@ After deploying, verify everything works end-to-end on the live app:
 
 If there are bugs, get them fixed and deploy until you have verified there are none remaining. Open a PR if this involves any code/script changes.
 ```
+
+Chances are the agent will find integration bugs during this step — e.g. the Slack bot token not making it to the droplet, or a merge conflict that broke a migration. It'll typically open a final cleanup PR to fix these. Review and merge that to finalize.
 
 You're done! Check out the [`final-state/`](../final-state/) directory to compare your result.
