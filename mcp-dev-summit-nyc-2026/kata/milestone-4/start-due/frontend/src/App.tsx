@@ -41,7 +41,7 @@ export default function App() {
     setSelectedIssue(null);
   };
 
-  const handleCreateIssue = async (data: { title: string; description?: string; status?: string; priority?: string }) => {
+  const handleCreateIssue = async (data: { title: string; description?: string; status?: string; priority?: string; due_date?: string | null }) => {
     await createIssue(data as any);
     await loadIssues();
     setShowCreateModal(false);

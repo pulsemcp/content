@@ -7,6 +7,7 @@ export interface Issue {
   priority: 'none' | 'urgent' | 'high' | 'medium' | 'low';
   assignee: string | null;
   labels: string[];
+  due_date: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -18,6 +19,7 @@ export type CreateIssuePayload = {
   priority?: Issue['priority'];
   assignee?: string | null;
   labels?: string[];
+  due_date?: string | null;
 };
 
 export type UpdateIssuePayload = Partial<CreateIssuePayload>;

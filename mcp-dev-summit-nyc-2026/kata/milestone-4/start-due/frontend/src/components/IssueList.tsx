@@ -131,6 +131,24 @@ function formatDate(dateStr: string): string {
   return `${months[d.getMonth()]} ${d.getDate()}`;
 }
 
+function parseDateOnly(dueDateStr: string): Date {
+  const dateOnly = dueDateStr.substring(0, 10);
+  return new Date(dateOnly + 'T00:00:00');
+}
+
+function isOverdue(dueDateStr: string | null): boolean {
+  if (!dueDateStr) return false;
+  const dueDate = parseDateOnly(dueDateStr);
+  const today = new Date(new Date().toDateString());
+  return dueDate < today;
+}
+
+function formatDueDate(dueDateStr: string): string {
+  const d = parseDateOnly(dueDateStr);
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${months[d.getMonth()]} ${d.getDate()}`;
+}
+
 export default function IssueList({ issues, loading, onSelectIssue, onCreateClick }: IssueListProps) {
   const grouped = STATUS_ORDER.reduce((acc, status) => {
     const statusIssues = issues.filter(i => i.status === status);
@@ -203,6 +221,17 @@ export default function IssueList({ issues, loading, onSelectIssue, onCreateClic
                     <span className="issue-title">{issue.title}</span>
                   </div>
                   <div className="issue-row-right">
+                    {issue.due_date && (
+                      <span className={`issue-due-date ${isOverdue(issue.due_date) ? 'overdue' : ''}`} title={`Due: ${issue.due_date}`}>
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                          <rect x="2" y="3" width="12" height="11" rx="2" />
+                          <line x1="2" y1="6" x2="14" y2="6" />
+                          <line x1="5" y1="1" x2="5" y2="4" />
+                          <line x1="11" y1="1" x2="11" y2="4" />
+                        </svg>
+                        {formatDueDate(issue.due_date)}
+                      </span>
+                    )}
                     <AssigneeAvatar assignee={issue.assignee} />
                     <span className="issue-date">{formatDate(issue.created_at)}</span>
                   </div>

@@ -48,7 +48,7 @@ app.get('/api/issues/:id', async (req, res) => {
 // Create issue
 app.post('/api/issues', async (req, res) => {
   try {
-    const { title, description, status, priority, assignee, labels } = req.body;
+    const { title, description, status, priority, assignee, labels, due_date } = req.body;
 
     // Generate next identifier
     const countResult = await pool.query('SELECT COUNT(*) FROM issues');
@@ -56,8 +56,8 @@ app.post('/api/issues', async (req, res) => {
     const identifier = `SAN-${count}`;
 
     const { rows } = await pool.query(
-      `INSERT INTO issues (identifier, title, description, status, priority, assignee, labels)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `INSERT INTO issues (identifier, title, description, status, priority, assignee, labels, due_date)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
        RETURNING *`,
       [
         identifier,
@@ -67,6 +67,7 @@ app.post('/api/issues', async (req, res) => {
         priority || 'none',
         assignee || null,
         labels || [],
+        due_date || null,
       ]
     );
     res.status(201).json(rows[0]);
@@ -79,7 +80,7 @@ app.post('/api/issues', async (req, res) => {
 // Update issue
 app.patch('/api/issues/:id', async (req, res) => {
   try {
-    const { title, description, status, priority, assignee, labels } = req.body;
+    const { title, description, status, priority, assignee, labels, due_date } = req.body;
     const fields: string[] = [];
     const values: any[] = [];
     let idx = 1;
@@ -90,6 +91,7 @@ app.patch('/api/issues/:id', async (req, res) => {
     if (priority !== undefined) { fields.push(`priority = $${idx++}`); values.push(priority); }
     if (assignee !== undefined) { fields.push(`assignee = $${idx++}`); values.push(assignee); }
     if (labels !== undefined) { fields.push(`labels = $${idx++}`); values.push(labels); }
+    if (due_date !== undefined) { fields.push(`due_date = $${idx++}`); values.push(due_date); }
 
     if (fields.length === 0) {
       return res.status(400).json({ error: 'No fields to update' });
@@ -143,9 +145,14 @@ async function migrate() {
         priority VARCHAR(50) NOT NULL DEFAULT 'none',
         assignee VARCHAR(100) DEFAULT NULL,
         labels TEXT[] DEFAULT '{}',
+        due_date DATE DEFAULT NULL,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
       );
+    `);
+    // Add due_date column if it doesn't exist (for existing databases)
+    await client.query(`
+      ALTER TABLE issues ADD COLUMN IF NOT EXISTS due_date DATE DEFAULT NULL;
     `);
     const { rows } = await client.query('SELECT COUNT(*) FROM issues');
     if (parseInt(rows[0].count) === 0) {

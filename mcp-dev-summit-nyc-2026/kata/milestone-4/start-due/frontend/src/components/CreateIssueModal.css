@@ -250,3 +250,33 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.due-date-pill {
+  position: relative;
+  overflow: hidden;
+}
+
+.date-picker-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.clear-date-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 10px;
+  padding: 0 2px;
+  cursor: pointer;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.clear-date-btn:hover {
+  color: var(--text-primary);
+}

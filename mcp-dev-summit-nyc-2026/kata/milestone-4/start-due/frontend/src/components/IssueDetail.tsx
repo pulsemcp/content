@@ -60,6 +60,15 @@ function PriorityIcon({ priority }: { priority: Issue['priority'] }) {
   );
 }
 
+function parseDateOnly(dueDateStr: string): Date {
+  return new Date(dueDateStr.substring(0, 10) + 'T00:00:00');
+}
+
+function isDueDateOverdue(dueDateStr: string | null): boolean {
+  if (!dueDateStr) return false;
+  return parseDateOnly(dueDateStr) < new Date(new Date().toDateString());
+}
+
 function formatTimeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60000);
@@ -248,6 +257,31 @@ export default function IssueDetail({ issue, onBack, onUpdate, onDelete }: Issue
             <div className="property-row">
               <span className="property-add-icon">&#8853;</span>
               <span className="property-value muted">Assign</span>
+            </div>
+
+            <div className="property-row due-date-property">
+              <label className="property-row-trigger">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke={isDueDateOverdue(issue.due_date) ? 'var(--accent-red)' : 'currentColor'} strokeWidth="1.5">
+                  <rect x="2" y="3" width="12" height="11" rx="2" />
+                  <line x1="2" y1="6" x2="14" y2="6" />
+                  <line x1="5" y1="1" x2="5" y2="4" />
+                  <line x1="11" y1="1" x2="11" y2="4" />
+                </svg>
+                <span className={`property-value ${issue.due_date ? '' : 'muted'} ${isDueDateOverdue(issue.due_date) ? 'overdue' : ''}`}>
+                  {issue.due_date
+                    ? parseDateOnly(issue.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                    : 'Set due date'}
+                </span>
+                <input
+                  type="date"
+                  className="property-date-input"
+                  value={issue.due_date ? issue.due_date.substring(0, 10) : ''}
+                  onChange={e => onUpdate(issue.id, { due_date: e.target.value || null } as any)}
+                />
+              </label>
+              {issue.due_date && (
+                <button className="clear-due-date" onClick={() => onUpdate(issue.id, { due_date: null } as any)} title="Clear due date">&#10005;</button>
+              )}
             </div>
           </div>
 

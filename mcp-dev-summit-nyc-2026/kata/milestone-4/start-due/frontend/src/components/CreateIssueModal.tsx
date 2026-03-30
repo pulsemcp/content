@@ -3,7 +3,7 @@ import './CreateIssueModal.css';
 
 interface CreateIssueModalProps {
   onClose: () => void;
-  onCreate: (data: { title: string; description?: string; status?: string; priority?: string }) => void;
+  onCreate: (data: { title: string; description?: string; status?: string; priority?: string; due_date?: string | null }) => void;
 }
 
 export default function CreateIssueModal({ onClose, onCreate }: CreateIssueModalProps) {
@@ -11,6 +11,7 @@ export default function CreateIssueModal({ onClose, onCreate }: CreateIssueModal
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('backlog');
   const [priority, setPriority] = useState('none');
+  const [dueDate, setDueDate] = useState('');
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [showPriorityDropdown, setShowPriorityDropdown] = useState(false);
 
@@ -21,6 +22,7 @@ export default function CreateIssueModal({ onClose, onCreate }: CreateIssueModal
       description: description.trim() || undefined,
       status,
       priority,
+      due_date: dueDate || null,
     });
   };
 
@@ -107,6 +109,25 @@ export default function CreateIssueModal({ onClose, onCreate }: CreateIssueModal
                     </button>
                   ))}
                 </div>
+              )}
+            </div>
+            <div className="modal-pill due-date-pill">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <rect x="2" y="3" width="12" height="11" rx="2" />
+                <line x1="2" y1="6" x2="14" y2="6" />
+                <line x1="5" y1="1" x2="5" y2="4" />
+                <line x1="11" y1="1" x2="11" y2="4" />
+              </svg>
+              <span>{dueDate ? new Date(dueDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Due date'}</span>
+              <input
+                type="date"
+                className="date-picker-input"
+                value={dueDate}
+                onChange={e => setDueDate(e.target.value)}
+                onClick={e => e.stopPropagation()}
+              />
+              {dueDate && (
+                <button className="clear-date-btn" onClick={e => { e.stopPropagation(); setDueDate(''); }} title="Clear due date">&#10005;</button>
               )}
             </div>
             <div className="modal-pill disabled">
