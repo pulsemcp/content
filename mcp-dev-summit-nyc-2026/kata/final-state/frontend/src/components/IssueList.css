@@ -1,0 +1,267 @@
+.issue-list-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.issue-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  min-height: 44px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.team-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.notification-icon {
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.issue-list-tabs {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  min-height: 36px;
+  gap: 2px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tab {
+  padding: 6px 12px;
+  font-size: 12px;
+  background: none;
+  border: none;
+  color: #6b6f76;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+
+.tab:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.tab.active {
+  background: rgba(255, 255, 255, 0.10);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.tab.tab-settings {
+  color: var(--text-muted);
+  padding: 6px 8px;
+}
+
+.tab-spacer {
+  flex: 1;
+}
+
+.view-toggles {
+  display: flex;
+  gap: 2px;
+}
+
+.view-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.view-btn:hover {
+  color: var(--text-secondary);
+  background: var(--bg-hover);
+}
+
+.issue-list-body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.issue-group {
+  margin-bottom: 0;
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: var(--bg-section-header);
+  font-size: 13px;
+  font-weight: 500;
+  min-height: 36px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.group-caret {
+  color: var(--text-muted);
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.group-label {
+  color: var(--text-primary);
+}
+
+.group-count {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.group-add {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 16px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.group-add:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.issue-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px 8px 44px;
+  min-height: 36px;
+  cursor: pointer;
+  transition: background 0.1s;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.issue-row:hover {
+  background: var(--bg-hover);
+}
+
+.issue-row-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.issue-identifier {
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.issue-title {
+  font-size: 13px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.issue-row-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.assignee-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.assignee-avatar.assigned {
+  background: var(--accent-green);
+  color: white;
+}
+
+.assignee-avatar.unassigned {
+  /* just the SVG, no background needed */
+}
+
+.issue-date {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--text-muted);
+}
+
+.issue-due-date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.issue-due-date.overdue {
+  color: var(--accent-red);
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.priority-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+}
+
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: white;
+  padding: 1px 5px;
+  border-radius: 3px;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}

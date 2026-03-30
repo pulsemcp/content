@@ -4,7 +4,7 @@
 
 ## Context
 
-The app is deployed and working. Now we want to add three features at once. This is where parallelization comes in: the talk covered the "Aha #2" moment of running multiple agents simultaneously. Here we practice it.
+The app is deployed and working. Now we want to add three features at once. This is where parallelization comes in.
 
 The catch: these features **trample each other**. They touch the same files — the ticket model, the ticket card UI, the creation form, the API routes. If you ran three agents on the same clone, you'd get constant merge conflicts. The solution: **one git clone per agent**, then merge the results.
 
@@ -18,30 +18,7 @@ The catch: these features **trample each other**. They touch the same files — 
 
 Features 2 and 3 are the trampling showcase: they both modify the same database migration, the same ticket card component, the same form, and the same API serialization. Running them on one clone would be a disaster. Running them on separate clones lets each agent work independently, and the merges resolve cleanly.
 
-## Steps
-
-### Step 1: Design the Visual Features
-
-Before kicking off the parallel agents, create Figma designs for the due dates and priority levels features. This gives agents 2 and 3 a clear visual target — the same way Milestone 2 used a Figma design to drive implementation.
-
-```
-┌────────────────────────────────────────────────┐
-│                                                │
-│   Figma (design due dates + priority UI)       │
-│           │                                    │
-│           ▼                                    │
-│   Playwright (compare Figma ↔ current app)     │
-│           │                                    │
-│       Good? ──── No ──→ iterate in Figma       │
-│           │                                    │
-│          Yes                                   │
-│           │                                    │
-│   Designs ready for agents 2 & 3               │
-│                                                │
-└────────────────────────────────────────────────┘
-```
-
-### Step 2: Run Three Agents in Parallel
+## The Parallel Loop
 
 Spin up three git clones. Each agent gets its own clone and works independently.
 
@@ -51,10 +28,9 @@ Spin up three git clones. Each agent gets its own clone and works independently.
          │  Agent 1:        │  │  Agent 2:        │  │  Agent 3:        │
          │  Slack notifs    │  │  Due dates       │  │  Priority levels │
          │                  │  │                  │  │                  │
-         │  Slack MCP ✓     │  │  Figma MCP ✓     │  │  Figma MCP ✓     │
-         │  GitHub MCP ✓    │  │  Playwright ✓    │  │  Playwright ✓    │
-         │  DigitalOcean ✓  │  │  GitHub MCP ✓    │  │  GitHub MCP ✓    │
-         │  SSH ✓           │  │  /start-dev ✓    │  │  /start-dev ✓    │
+         │  Chrome DT ✓     │  │  Chrome DT ✓     │  │  Chrome DT ✓     │
+         │  Slack MCP ✓     │  │  GitHub MCP ✓    │  │  GitHub MCP ✓    │
+         │  GitHub MCP ✓    │  │                  │  │                  │
          │                  │  │                  │  │                  │
          └───────┬──────────┘  └───────┬──────────┘  └───────┬──────────┘
                  │                     │                     │
@@ -66,21 +42,13 @@ Spin up three git clones. Each agent gets its own clone and works independently.
                                 Deploy combined result
 ```
 
-### Step 3: Merge and Deploy
-
-Once all three agents have opened their PRs, you (or a coordinating agent) merge them into main, resolve any minor conflicts, deploy the combined result, and verify all three features work together on the live app.
-
 ## MCP Servers & Tools
 
 | Server / Tool | Agent 1 (Slack) | Agent 2 (Due dates) | Agent 3 (Priority) |
 |---------------|:---:|:---:|:---:|
-| **Figma** | | ✓ | ✓ |
-| **Playwright** | | ✓ | ✓ |
+| **Chrome DevTools** | ✓ | ✓ | ✓ |
 | **Slack** | ✓ | | |
 | **GitHub** | ✓ | ✓ | ✓ |
-| **DigitalOcean** | ✓ | | |
-| **SSH** | ✓ | | |
-| `/start-dev-server` **skill** | | ✓ | ✓ |
 
 ## Closed Loops
 
@@ -90,11 +58,11 @@ Once all three agents have opened their PRs, you (or a coordinating agent) merge
 
 ### Agent 2: Due Dates
 - **Definition of done**: Tickets have a due date field with a date picker, and overdue tickets are visually highlighted
-- **Verification**: Playwright confirms the UI matches the Figma design and overdue highlighting renders correctly
+- **Verification**: Chrome DevTools confirms the date picker works and overdue tickets are visually highlighted
 
 ### Agent 3: Priority Levels
 - **Definition of done**: Tickets have a priority field (P0–P3) with color-coded labels
-- **Verification**: Playwright confirms the UI matches the Figma design and priority labels render with correct colors
+- **Verification**: Chrome DevTools confirms the priority dropdown works and labels render with correct colors
 
 ### Combined Verification (Step 3)
 - **Definition of done**: All three features work together on the deployed app
@@ -104,13 +72,112 @@ Once all three agents have opened their PRs, you (or a coordinating agent) merge
 
 - **Separate git clones** — Each agent gets its own copy of the code, avoiding merge conflicts during development
 - **Why these features trample** — Features 2 and 3 both add DB columns to the tickets table, modify the same ticket card component, the same creation form, and the same API serialization
-- **Design-first for visual features** — Creating Figma designs before kicking off agents gives each a clear, verifiable target
 - **Independent verification** — Each agent closes its own loop before the merge step
 
 ## Starting Point
 
-The `start/` directory contains the starting state for this milestone — a deployed app on DigitalOcean with CI/CD from Milestone 3. You can jump straight in here without completing Milestones 1–3.
+The `start-slack/`, `start-due/`, and `start-prio/` directories each contain a copy of the app from Milestone 3, with a `.mcp.json` tailored to that agent's task. You can jump straight in here without completing Milestones 1–3.
 
 ## What You'll Have When Done
 
 The Linear clone app with three new features (Slack notifications, due dates, priority levels), all developed in parallel and deployed together. Plus firsthand experience with the parallelization pattern: separate clones, independent loops, merge and verify.
+
+## Guide
+
+### Step 1: Understand the directory layout
+
+Each agent gets its own directory with its own `.mcp.json` tailored to its task:
+
+- `start-slack/` — Agent 1 (Slack notifications) — has Chrome DevTools + Slack MCP + GitHub
+- `start-due/` — Agent 2 (Due dates) — has Chrome DevTools + GitHub
+- `start-prio/` — Agent 3 (Priority levels) — has Chrome DevTools + GitHub
+
+### Step 2: Create a Slack bot token
+
+Agent 1 needs a Slack bot token so the app can post messages when tickets are completed. Set this up before starting the loop:
+
+1. Go to [api.slack.com/apps](https://api.slack.com/apps) and create a new app (from scratch)
+2. Under **OAuth & Permissions**, add the `chat:write` bot scope
+3. Install the app to your workspace
+4. Copy the **Bot User OAuth Token** (`xoxb-...`)
+5. Create a channel (e.g. `#linear-clone-notifications`) and invite the bot to it
+
+### Step 3: Launch three agents in parallel
+
+Open three terminals. Each agent gets its own clone, its own Claude Code session, and its own prompt.
+
+**Terminal 1 — Slack notifications** (in `start-slack/`):
+
+```
+cd start-slack
+export SLACK_BOT_TOKEN=xoxb-...
+export GITHUB_TOKEN=$(gh auth token)
+claude --dangerously-skip-permissions
+## Inside Claude Code
+/mcp
+```
+
+Make sure **Slack**, **Chrome DevTools**, and **GitHub** are all authenticated before proceeding.
+
+```
+Add Slack notifications to the Linear clone app. When a ticket's status is changed to "Done", post a message to the Slack channel #linear-clone-notifications.
+
+The SLACK_BOT_TOKEN env var is set in my shell with a bot that has chat:write scope and is invited to the channel.
+
+- Add a Slack integration to the backend using the bot token from the SLACK_BOT_TOKEN env var
+- Test the app running locally and use Chrome DevTools to mark a ticket as done, then use the Slack MCP to confirm the message arrived in the channel. Keep iterating until it works end to end.
+- Open a PR on GitHub (https://github.com/tadasant/demo-mcp-dev-summit-linear) with the changes
+```
+
+**Terminal 2 — Due dates** (in `start-due/`):
+
+```
+cd start-due
+export GITHUB_TOKEN=$(gh auth token)
+claude --dangerously-skip-permissions
+```
+
+```
+Add due dates to the Linear clone app.
+
+- Add a date picker to the create/edit ticket form, backed by the database
+- Display the due date on ticket cards, with a red overdue indicator for past-due tickets
+- Run the app locally with docker compose and use Chrome DevTools to verify the date picker works and overdue highlighting renders correctly
+- Iterate until it looks polished, then open a PR on GitHub (https://github.com/tadasant/demo-mcp-dev-summit-linear) with the changes
+```
+
+**Terminal 3 — Priority levels** (in `start-prio/`):
+
+```
+cd start-prio
+export GITHUB_TOKEN=$(gh auth token)
+claude --dangerously-skip-permissions
+```
+
+```
+Add priority levels (P0–P3) to the Linear clone app.
+
+- Add a priority dropdown to the create/edit ticket form, backed by the database
+- Display color-coded priority labels on ticket cards (P0 red, P1 orange, P2 yellow, P3 gray)
+- Run the app locally with docker compose and use Chrome DevTools to verify the priority dropdown works and labels render with correct colors
+- Iterate until it looks polished, then open a PR on GitHub (https://github.com/tadasant/demo-mcp-dev-summit-linear)
+```
+
+### Step 4: Merge, deploy, and verify
+
+Once all three agents have opened their PRs, tell the Slack agent (because it has access to your Slack secret that needs to be deployed) to bring it all together:
+
+```
+I've reviewed and approve of all three open PRs on this repo, including the one you just prepared. Merge them all into main, resolving any conflicts, and deploy the combined result to the droplet.
+
+After deploying, verify everything works end-to-end on the live app:
+- Use Chrome DevTools to create a ticket with a due date and priority level
+- Mark a ticket as done and use the Slack MCP to confirm the notification arrived
+- Check that overdue highlighting and priority colors render properly and there are no bugs
+
+If there are bugs, get them fixed and deploy until you have verified there are none remaining. Open a PR if this involves any code/script changes.
+```
+
+Chances are the agent will find integration bugs during this step — e.g. the Slack bot token not making it to the droplet, or a merge conflict that broke a migration. It'll typically open a final cleanup PR to fix these. Review and merge that to finalize.
+
+You're done! Check out the [`final-state/`](../final-state/) directory to compare your result.
