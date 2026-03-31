@@ -180,4 +180,8 @@ If there are bugs, get them fixed and deploy until you have verified there are n
 
 Chances are the agent will find integration bugs during this step — e.g. the Slack bot token not making it to the droplet, or a merge conflict that broke a migration. It'll typically open a final cleanup PR to fix these. Review and merge that to finalize.
 
+Here's what ours looked like — all three agents finishing their work in parallel:
+
+![Parallel agents completing](assets/parallel-agents.png)
+
 You're done! Check out the [`final-state/`](../final-state/) directory to compare your result.
