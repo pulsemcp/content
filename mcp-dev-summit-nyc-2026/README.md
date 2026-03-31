@@ -7,6 +7,10 @@ This talk covers how to move from manual, back-and-forth coding agent usage to f
 
 All exercises use **[Claude Code](https://docs.anthropic.com/en/docs/claude-code)** as the coding agent. Claude Code has native MCP support, which lets the agent connect to external tools (Figma, Chrome DevTools, GitHub, etc.) and use them autonomously inside its loop.
 
+## Slides
+
+- [Workshop-Architecting-Agentic-Engineering-Loops-With-MCP.pdf](Workshop-Architecting-Agentic-Engineering-Loops-With-MCP.pdf)
+
 ## Kata Exercises
 
 Hands-on exercises for the session: [`kata/`](kata/)
