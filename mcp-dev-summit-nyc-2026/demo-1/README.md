@@ -59,14 +59,14 @@ function editFromDetail() {
 Make sure the `linear-clone-demo/` directory has no modifications from previous runs:
 
 ```bash
-cd mcp-academy-live-2026/demo-1/linear-clone-demo
+cd mcp-dev-summit-nyc-2026/demo-1/linear-clone-demo
 git checkout -- .
 ```
 
 ### 2. Open Claude Code in the project directory
 
 ```bash
-cd mcp-academy-live-2026/demo-1/linear-clone-demo
+cd mcp-dev-summit-nyc-2026/demo-1/linear-clone-demo
 claude
 ```
 
