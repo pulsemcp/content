@@ -11,6 +11,13 @@ All exercises use **[Claude Code](https://docs.anthropic.com/en/docs/claude-code
 
 - [Workshop-Architecting-Agentic-Engineering-Loops-With-MCP.pdf](Workshop-Architecting-Agentic-Engineering-Loops-With-MCP.pdf)
 
+## Demos
+
+Live demos from the session (same demos as [MCP Academy LIVE! 2026](../mcp-academy-live-2026/)):
+
+- [`demo-1/`](demo-1/) — Linear clone app for the UI bug demo (Playwright MCP) — includes [recording](demo-1/README.md)
+- [`demo-2/`](demo-2/) — On-call triage demo (AppSignal + Postgres + Playwright + Slack MCP) — includes [recording](demo-2/README.md)
+
 ## Kata Exercises
 
 Hands-on exercises for the session: [`kata/`](kata/)

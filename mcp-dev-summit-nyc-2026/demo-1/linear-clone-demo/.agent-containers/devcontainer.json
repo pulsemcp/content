@@ -1,0 +1,33 @@
+{
+  "name": "linear-clone-demo",
+  "dockerComposeFile": "docker-compose.dev.yml",
+  "service": "app",
+  "workspaceFolder": "/app",
+  "postCreateCommand": "bash .agent-containers/setup.sh",
+  "postStartCommand": "bash .agent-containers/run.sh",
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,readonly",
+    "source=${localEnv:HOME}/.config/gh,target=/root/.config/gh,type=bind,readonly"
+  ],
+  "customizations": {
+    "ac": {
+      "app_port": 3000,
+      "health_check": {
+        "command": "curl -sf http://localhost:3000/health",
+        "timeout_seconds": 120,
+        "interval_seconds": 5
+      },
+      "required_secrets": [],
+      "external_dependencies": [],
+      "verification": {
+        "tests_command": "echo 'no tests yet'"
+      },
+      "services": {
+        "app": { "port": 3000, "type": "web" },
+        "db": { "port": 5432, "type": "postgres" }
+      },
+      "estimated_boot_time_seconds": 30,
+      "confidence": "high"
+    }
+  }
+}

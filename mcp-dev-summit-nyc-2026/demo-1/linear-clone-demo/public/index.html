@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linear Clone</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; background: #0a0a0f; color: #e0e0e8; }
+
+    .app { display: flex; height: 100vh; }
+
+    /* Sidebar */
+    .sidebar { width: 240px; background: #101017; border-right: 1px solid #1e1e2a; padding: 0; flex-shrink: 0; display: flex; flex-direction: column; }
+    .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 16px 16px 14px; }
+    .sidebar-brand svg { flex-shrink: 0; }
+    .sidebar-brand span { font-size: 14px; font-weight: 600; letter-spacing: -0.3px; }
+    .sidebar-section { padding: 4px 8px; }
+    .sidebar-section-label { font-size: 11px; font-weight: 500; color: #55556a; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 8px 4px; }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 1px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 6px 10px; background: none; border: none; color: #8888a0; font-size: 13px; cursor: pointer; text-align: left; border-radius: 6px; transition: all 0.1s; }
+    .nav-item:hover { background: #1a1a28; color: #c8c8d8; }
+    .nav-item.active { background: #1e1e30; color: #e0e0f0; }
+    .nav-item .count { margin-left: auto; font-size: 11px; color: #55556a; min-width: 16px; text-align: right; }
+    .nav-item svg { flex-shrink: 0; opacity: 0.6; }
+    .nav-item.active svg { opacity: 1; }
+
+    /* Main content */
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #0d0d14; }
+
+    /* Header */
+    .header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid #1e1e2a; min-height: 48px; }
+    .header h2 { font-size: 14px; font-weight: 600; color: #c0c0d0; }
+    .header-right { display: flex; align-items: center; gap: 8px; }
+    .issue-count { font-size: 12px; color: #55556a; margin-left: 8px; }
+
+    /* Buttons */
+    .btn { padding: 6px 14px; border-radius: 6px; border: none; font-size: 13px; cursor: pointer; font-weight: 500; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-primary { background: #5e6ad2; color: white; }
+    .btn-primary:hover { background: #6872e0; }
+    .btn-ghost { background: none; color: #8888a0; padding: 6px 8px; }
+    .btn-ghost:hover { background: #1a1a28; color: #c8c8d8; }
+    .btn-danger { background: rgba(220, 60, 60, 0.12); color: #e06060; border: 1px solid rgba(220, 60, 60, 0.2); }
+    .btn-danger:hover { background: rgba(220, 60, 60, 0.2); }
+
+    /* Issue list */
+    .issue-list { flex: 1; overflow-y: auto; }
+    .issue-row { display: flex; align-items: center; gap: 12px; padding: 0 20px; height: 40px; border-bottom: 1px solid #14141e; cursor: pointer; font-size: 13px; transition: background 0.1s; }
+    .issue-row:hover { background: #12121c; }
+    .issue-priority-indicator { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .issue-status-icon { width: 18px; height: 18px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .issue-id { color: #55556a; font-size: 12px; min-width: 48px; font-variant-numeric: tabular-nums; }
+    .issue-title { flex: 1; color: #d0d0e0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .issue-meta { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+    /* Status icons (SVG circles like Linear) */
+    .status-icon { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid; }
+    .status-icon-backlog { border-color: #55556a; border-style: dashed; }
+    .status-icon-todo { border-color: #8888a0; }
+    .status-icon-in_progress { border-color: #e8b84a; border-right-color: transparent; border-bottom-color: transparent; transform: rotate(-45deg); }
+    .status-icon-done { border-color: #5bb98b; background: #5bb98b; position: relative; }
+    .status-icon-done::after { content: ''; position: absolute; top: 2px; left: 4px; width: 3px; height: 6px; border: solid #0d0d14; border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+    .status-icon-cancelled { border-color: #e06060; background: rgba(220, 60, 60, 0.15); }
+
+    /* Priority bars (like Linear) */
+    .priority-bars { display: flex; gap: 1.5px; align-items: flex-end; height: 12px; }
+    .priority-bar { width: 3px; border-radius: 0.5px; background: #333345; }
+    .priority-urgent .priority-bar { background: #e06060; }
+    .priority-high .priority-bar:nth-child(-n+3) { background: #e89040; }
+    .priority-medium .priority-bar:nth-child(-n+2) { background: #e8b84a; }
+    .priority-low .priority-bar:nth-child(1) { background: #6888d0; }
+
+    /* Status badges */
+    .badge { padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.2px; }
+    .status-backlog { background: rgba(85, 85, 106, 0.15); color: #8888a0; }
+    .status-todo { background: rgba(100, 120, 200, 0.12); color: #8090d0; }
+    .status-in_progress { background: rgba(232, 184, 74, 0.12); color: #e8b84a; }
+    .status-done { background: rgba(91, 185, 139, 0.12); color: #5bb98b; }
+    .status-cancelled { background: rgba(220, 60, 60, 0.1); color: #c06060; }
+
+    /* Modal */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+    .modal-overlay.open { display: flex; }
+    .modal { background: #16161f; border: 1px solid #2a2a38; border-radius: 12px; width: 520px; max-height: 80vh; overflow-y: auto; box-shadow: 0 24px 48px rgba(0,0,0,0.4); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #1e1e2a; }
+    .modal-header h3 { font-size: 14px; font-weight: 600; color: #c0c0d0; }
+    .modal-body { padding: 20px; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 20px; border-top: 1px solid #1e1e2a; }
+
+    /* Form */
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 12px; color: #6a6a80; margin-bottom: 6px; font-weight: 500; }
+    .field input, .field textarea, .field select {
+      width: 100%; padding: 8px 12px; border-radius: 8px;
+      border: 1px solid #2a2a38; background: #0d0d14; color: #e0e0e8; font-size: 13px;
+      font-family: inherit; transition: border-color 0.15s;
+    }
+    .field textarea { resize: vertical; min-height: 80px; }
+    .field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: #5e6ad2; box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.12); }
+    .field select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236a6a80' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+
+    /* Detail view */
+    .detail-row { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; padding: 8px 0; border-bottom: 1px solid #14141e; }
+    .detail-label { font-size: 12px; color: #55556a; min-width: 80px; font-weight: 500; }
+    .detail-value { font-size: 13px; color: #c0c0d0; }
+
+    /* Empty state */
+    .empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; color: #55556a; }
+    .empty svg { margin-bottom: 16px; opacity: 0.3; }
+    .empty p { font-size: 13px; }
+
+    /* Scrollbar */
+    .issue-list::-webkit-scrollbar { width: 6px; }
+    .issue-list::-webkit-scrollbar-track { background: transparent; }
+    .issue-list::-webkit-scrollbar-thumb { background: #2a2a38; border-radius: 3px; }
+    .issue-list::-webkit-scrollbar-thumb:hover { background: #3a3a48; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect width="20" height="20" rx="4" fill="#5e6ad2"/><path d="M6 10.5L9 13.5L14 7.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Linear Clone</span>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-nav" id="sidebar-nav">
+          <button class="nav-item active" data-filter="" onclick="setFilter(null, this)">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            All Issues
+            <span class="count" id="count-all">0</span>
+          </button>
+          <button class="nav-item" data-filter="backlog" onclick="setFilter('backlog', this)">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2"/></svg>
+            Backlog
+            <span class="count" id="count-backlog">0</span>
+          </button>
+          <button class="nav-item" data-filter="todo" onclick="setFilter('todo', this)">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/></svg>
+            Todo
+            <span class="count" id="count-todo">0</span>
+          </button>
+          <button class="nav-item" data-filter="in_progress" onclick="setFilter('in_progress', this)">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2.5A5.5 5.5 0 1013.5 8" stroke="#e8b84a" stroke-width="1.5" stroke-linecap="round"/></svg>
+            In Progress
+            <span class="count" id="count-in_progress">0</span>
+          </button>
+          <button class="nav-item" data-filter="done" onclick="setFilter('done', this)">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" fill="#5bb98b" stroke="#5bb98b" stroke-width="1.5"/><path d="M5.5 8.2L7.2 10L10.5 6.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Done
+            <span class="count" id="count-done">0</span>
+          </button>
+          <button class="nav-item" data-filter="cancelled" onclick="setFilter('cancelled', this)">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="#c06060" stroke-width="1.5"/><path d="M5.5 8h5" stroke="#c06060" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Cancelled
+            <span class="count" id="count-cancelled">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="header">
+        <div style="display:flex;align-items:center;">
+          <h2 id="header-title">All Issues</h2>
+          <span class="issue-count" id="header-count"></span>
+        </div>
+        <div class="header-right">
+          <button class="btn btn-primary" onclick="openCreateModal()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            New Issue
+          </button>
+        </div>
+      </div>
+
+      <div class="issue-list" id="issue-list"></div>
+    </div>
+  </div>
+
+  <!-- Create / Edit Modal -->
+  <div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title">New Issue</h3>
+        <button class="btn btn-ghost" onclick="closeModal()" style="font-size:18px;">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label>Title</label>
+          <input type="text" id="field-title" placeholder="Issue title" autofocus>
+        </div>
+        <div class="field">
+          <label>Description</label>
+          <textarea id="field-description" placeholder="Add a description..."></textarea>
+        </div>
+        <div style="display:flex;gap:12px;">
+          <div class="field" style="flex:1;">
+            <label>Status</label>
+            <select id="field-status">
+              <option value="backlog">Backlog</option>
+              <option value="todo">Todo</option>
+              <option value="in_progress">In Progress</option>
+              <option value="done">Done</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div class="field" style="flex:1;">
+            <label>Priority</label>
+            <select id="field-priority">
+              <option value="none">No priority</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" id="modal-save" onclick="saveIssue()">Create Issue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="detail-modal" onclick="if(event.target===this)closeDetailModal()">
+    <div class="modal" style="width:560px;">
+      <div class="modal-header">
+        <h3 id="detail-id" style="color:#6a6a80;font-size:13px;">LIN-1</h3>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-ghost" onclick="editFromDetail()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10.5 1.5l2 2M1 13l1-4L10.5 1.5l2 2L4 12l-4 1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+            Edit
+          </button>
+          <button class="btn btn-danger" onclick="deleteIssue()">Delete</button>
+          <button class="btn btn-ghost" onclick="closeDetailModal()" style="font-size:18px;">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <h2 id="detail-title" style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: #e0e0f0;"></h2>
+        <p id="detail-description" style="font-size: 13px; color: #8888a0; margin-bottom: 24px; white-space: pre-wrap; line-height: 1.6;"></p>
+        <div class="detail-row">
+          <span class="detail-label">Status</span>
+          <span class="detail-value" id="detail-status"></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Priority</span>
+          <span class="detail-value" id="detail-priority"></span>
+        </div>
+        <div class="detail-row" style="border-bottom:none;">
+          <span class="detail-label">Created</span>
+          <span class="detail-value" id="detail-created"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let allIssues = [];
+    let issues = [];
+    let currentFilter = null;
+    let editingId = null;
+    let viewingIssue = null;
+
+    const STATUS_LABELS = { backlog: 'Backlog', todo: 'Todo', in_progress: 'In Progress', done: 'Done', cancelled: 'Cancelled' };
+    const PRIORITY_LABELS = { urgent: 'Urgent', high: 'High', medium: 'Medium', low: 'Low', none: 'No priority' };
+
+    function statusIcon(status) {
+      const icons = {
+        backlog: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="#55556a" stroke-width="1.5" stroke-dasharray="2 2"/></svg>',
+        todo: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="#8888a0" stroke-width="1.5"/></svg>',
+        in_progress: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2A5 5 0 1012 7" stroke="#e8b84a" stroke-width="1.5" stroke-linecap="round"/></svg>',
+        done: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" fill="#5bb98b"/><path d="M4.5 7.2L6.2 9L9.5 5.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        cancelled: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="#c06060" stroke-width="1.5"/><path d="M5 7h4" stroke="#c06060" stroke-width="1.5" stroke-linecap="round"/></svg>',
+      };
+      return icons[status] || icons.backlog;
+    }
+
+    function priorityBars(priority) {
+      const heights = [4, 7, 10, 12];
+      return `<div class="priority-bars priority-${priority}" title="${PRIORITY_LABELS[priority]}">${heights.map(h => `<div class="priority-bar" style="height:${h}px"></div>`).join('')}</div>`;
+    }
+
+    async function fetchAllIssues() {
+      const res = await fetch('/api/issues');
+      allIssues = await res.json();
+      updateCounts();
+      applyFilter();
+    }
+
+    function updateCounts() {
+      const counts = { all: allIssues.length, backlog: 0, todo: 0, in_progress: 0, done: 0, cancelled: 0 };
+      allIssues.forEach(i => { if (counts[i.status] !== undefined) counts[i.status]++; });
+      document.getElementById('count-all').textContent = counts.all;
+      document.getElementById('count-backlog').textContent = counts.backlog;
+      document.getElementById('count-todo').textContent = counts.todo;
+      document.getElementById('count-in_progress').textContent = counts.in_progress;
+      document.getElementById('count-done').textContent = counts.done;
+      document.getElementById('count-cancelled').textContent = counts.cancelled;
+    }
+
+    function applyFilter() {
+      issues = currentFilter ? allIssues.filter(i => i.status === currentFilter) : allIssues;
+      document.getElementById('header-count').textContent = issues.length + ' issue' + (issues.length !== 1 ? 's' : '');
+      renderIssues();
+    }
+
+    function renderIssues() {
+      const list = document.getElementById('issue-list');
+      if (issues.length === 0) {
+        list.innerHTML = `<div class="empty">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="#333345" stroke-width="2" stroke-dasharray="4 4"/><path d="M16 24h16M24 16v16" stroke="#333345" stroke-width="2" stroke-linecap="round"/></svg>
+          <p>No issues found</p>
+        </div>`;
+        return;
+      }
+      list.innerHTML = issues.map(issue => `
+        <div class="issue-row" onclick="viewIssue(${issue.id})">
+          <div class="issue-priority-indicator">${priorityBars(issue.priority)}</div>
+          <div class="issue-status-icon">${statusIcon(issue.status)}</div>
+          <span class="issue-id">${issue.identifier}</span>
+          <span class="issue-title">${esc(issue.title)}</span>
+          <span class="issue-meta">
+            <span class="badge status-${issue.status}">${STATUS_LABELS[issue.status]}</span>
+          </span>
+        </div>
+      `).join('');
+    }
+
+    function esc(str) {
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+
+    function setFilter(status, btn) {
+      currentFilter = status;
+      document.getElementById('header-title').textContent = status ? STATUS_LABELS[status] : 'All Issues';
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      applyFilter();
+    }
+
+    function openCreateModal() {
+      editingId = null;
+      document.getElementById('modal-title').textContent = 'New Issue';
+      document.getElementById('modal-save').textContent = 'Create Issue';
+      document.getElementById('field-title').value = '';
+      document.getElementById('field-description').value = '';
+      document.getElementById('field-status').value = 'backlog';
+      document.getElementById('field-priority').value = 'none';
+      document.getElementById('modal').classList.add('open');
+      setTimeout(() => document.getElementById('field-title').focus(), 100);
+    }
+
+    function openEditModal(issue) {
+      editingId = issue.id;
+      document.getElementById('modal-title').textContent = `Edit ${issue.identifier}`;
+      document.getElementById('modal-save').textContent = 'Save Changes';
+      document.getElementById('field-title').value = issue.title;
+      document.getElementById('field-description').value = issue.description || '';
+      document.getElementById('field-status').value = issue.status;
+      document.getElementById('field-priority').value = issue.priority;
+      document.getElementById('modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('open');
+    }
+
+    async function saveIssue() {
+      const body = {
+        title: document.getElementById('field-title').value,
+        description: document.getElementById('field-description').value,
+        status: document.getElementById('field-status').value,
+        priority: document.getElementById('field-priority').value,
+      };
+      if (!body.title) { document.getElementById('field-title').focus(); return; }
+
+      if (editingId) {
+        await fetch(`/api/issues/${editingId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      } else {
+        await fetch('/api/issues', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      }
+      closeModal();
+      closeDetailModal();
+      fetchAllIssues();
+    }
+
+    async function viewIssue(id) {
+      const res = await fetch(`/api/issues/${id}`);
+      viewingIssue = await res.json();
+      document.getElementById('detail-id').textContent = viewingIssue.identifier;
+      document.getElementById('detail-title').textContent = viewingIssue.title;
+      document.getElementById('detail-description').textContent = viewingIssue.description || '(No description)';
+      document.getElementById('detail-status').innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;">${statusIcon(viewingIssue.status)} <span class="badge status-${viewingIssue.status}">${STATUS_LABELS[viewingIssue.status]}</span></span>`;
+      document.getElementById('detail-priority').innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px;">${priorityBars(viewingIssue.priority)} ${PRIORITY_LABELS[viewingIssue.priority]}</span>`;
+      document.getElementById('detail-created').textContent = new Date(viewingIssue.created_at).toLocaleString();
+      document.getElementById('detail-modal').classList.add('open');
+    }
+
+    function closeDetailModal() {
+      document.getElementById('detail-modal').classList.remove('open');
+      viewingIssue = null;
+    }
+
+    function editFromDetail() {
+      if (viewingIssue) {
+        closeDetailModal();
+        openEditModal(viewingIssue);
+      }
+    }
+
+    async function deleteIssue() {
+      if (!viewingIssue) return;
+      if (!confirm(`Delete ${viewingIssue.identifier}?`)) return;
+      await fetch(`/api/issues/${viewingIssue.id}`, { method: 'DELETE' });
+      closeDetailModal();
+      fetchAllIssues();
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { closeModal(); closeDetailModal(); }
+      if (e.key === 'c' && !e.metaKey && !e.ctrlKey && document.activeElement === document.body) { openCreateModal(); }
+    });
+
+    // Init
+    fetchAllIssues();
+  </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "linear-clone-demo",
+  "version": "1.0.0",
+  "description": "Barebones Linear clone for hack day",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "migrate": "node src/migrate.js",
+    "seed": "node src/seed.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "pg": "^8.13.0"
+  }
+}
